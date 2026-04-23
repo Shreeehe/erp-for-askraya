@@ -360,6 +360,10 @@ export type Database = {
           status: Database['public']['Enums']['invoice_status'] | null;
           due_date: string | null;
           issued_at: string | null;
+          care_manager: string | null;
+          payment_reference: string | null;
+          payment_method: string | null;
+          payment_date: string | null;
           created_by: string | null;
         };
         Insert: {
@@ -375,6 +379,10 @@ export type Database = {
           status?: Database['public']['Enums']['invoice_status'] | null;
           due_date?: string | null;
           issued_at?: string | null;
+          care_manager?: string | null;
+          payment_reference?: string | null;
+          payment_method?: string | null;
+          payment_date?: string | null;
           created_by?: string | null;
         };
         Update: {
@@ -390,6 +398,10 @@ export type Database = {
           status?: Database['public']['Enums']['invoice_status'] | null;
           due_date?: string | null;
           issued_at?: string | null;
+          care_manager?: string | null;
+          payment_reference?: string | null;
+          payment_method?: string | null;
+          payment_date?: string | null;
           created_by?: string | null;
         };
       };
