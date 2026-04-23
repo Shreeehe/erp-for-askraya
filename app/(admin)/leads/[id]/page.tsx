@@ -1,11 +1,21 @@
-import { ActivityFeed } from '@/components/activity-feed';
+import { createClient } from '@/lib/supabase/server';
+import { LeadDetailClient } from '@/components/leads/LeadDetailClient';
 
-export default function LeadDetailPage() {
-  return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-semibold text-primary">Lead Detail</h1>
-      <button className="rounded-md bg-success px-3 py-2 text-white">Convert to Patient</button>
-      <ActivityFeed items={[{ id: '1', note: 'Initial call completed', created_at: new Date().toISOString() }]} />
-    </section>
-  );
+export default async function LeadDetailPage({ params }: { params: { id: string } }) {
+  const supabase = createClient();
+  const [{ data: lead }, { data: activities }, { data: staff }] = await Promise.all([
+    supabase.from('leads').select('*').eq('id', params.id).single(),
+    supabase.from('lead_activities').select('*').eq('lead_id', params.id).order('created_at', { ascending: false }),
+    supabase.from('staff').select('*')
+  ]);
+
+  if (!lead) return <div className="rounded-lg border bg-white p-4">Lead not found</div>;
+
+  let patientName: string | null = null;
+  if (lead.patient_id) {
+    const { data: patient } = await supabase.from('patients').select('full_name').eq('id', lead.patient_id).single();
+    patientName = patient?.full_name ?? null;
+  }
+
+  return <LeadDetailClient lead={lead} activities={activities ?? []} staff={staff ?? []} patientName={patientName} />;
 }

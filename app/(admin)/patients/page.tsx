@@ -1,10 +1,8 @@
-import { PageHeader } from '@/components/page-header';
+import { createClient } from '@/lib/supabase/server';
+import { PatientsTable } from '@/components/patients/PatientsTable';
 
-export default function PatientsPage() {
-  return (
-    <section className="space-y-4">
-      <PageHeader title="Patients" />
-      <div className="rounded-lg border bg-white p-4">Patient table with filters and CSV export.</div>
-    </section>
-  );
+export default async function PatientsPage() {
+  const supabase = createClient();
+  const { data: patients } = await supabase.from('patients').select('*').order('created_at', { ascending: false });
+  return <section className="space-y-4"><h1 className="text-2xl font-semibold text-[#052044]">Patients</h1><PatientsTable initialPatients={patients ?? []} /></section>;
 }
